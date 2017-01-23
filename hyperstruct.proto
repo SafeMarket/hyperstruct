@@ -1,0 +1,8 @@
+package hyperstruct;
+syntax = "proto3";
+
+message Hyperstruct {
+  required uint32 hyperstructVersion = 1;
+  required bytes protoMultihash = 2;
+  required bytes protoType = 3;
+}
