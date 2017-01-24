@@ -1,6 +1,6 @@
 {
   "name": "hyperstruct",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Self describing protocol buffers on IPFS",
   "main": "index.js",
   "scripts": {
