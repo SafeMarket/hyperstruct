@@ -29,9 +29,9 @@ HyperstructApi.prototype.getObject = function getObject(multihash) {
   })
 }
 
-HyperstructApi.prototype.addFile = function addFile(protofileMultihash, fileTypeName, file) {
+HyperstructApi.encode = function encode(protofileMultihash, fileTypeName, file) {
   arguguard(
-    'hyperstructApi.addFile(protofileMultihash, fileType, file)',
+    'HyperstructApi.encode(protofileMultihash, fileType, file)',
     [Amorph, 'string', Amorph],
     arguments
   )
@@ -42,7 +42,16 @@ HyperstructApi.prototype.addFile = function addFile(protofileMultihash, fileType
     file: file.to('buffer')
   })
   const hyperstructFileBuffer = hyperstructType.encode(hyperstruct).finish()
-  const hyperstructFile = new Amorph(hyperstructFileBuffer, 'buffer')
+  return new Amorph(hyperstructFileBuffer, 'buffer')
+}
+
+HyperstructApi.prototype.addFile = function addFile(protofileMultihash, fileTypeName, file) {
+  arguguard(
+    'hyperstructApi.addFile(protofileMultihash, fileType, file)',
+    [Amorph, 'string', Amorph],
+    arguments
+  )
+  const hyperstructFile = HyperstructApi.encode(protofileMultihash, fileTypeName, file)
   return this.ipfsApi.addFile(hyperstructFile)
 }
 
