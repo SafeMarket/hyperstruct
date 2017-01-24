@@ -5,11 +5,25 @@ const Amorph = require('amorph')
 const hyperstructType = require('./lib/hyperstructType')
 const HyperstructVersionError = require('./lib/errors/HyperstructVersion')
 const HyperstructDecodeError = require('./lib/errors/HyperstructDecode')
+const UnknownFormError = require('./lib/errors/UnknownForm')
 
 function HyperstructApi(ipfsOptions) {
   arguguard('HyperstructApi(ipfsOptions)', ['object'], arguments)
   this.ipfsApi = new IpfsApi(ipfsOptions)
   this.protobuf = protobuf
+}
+
+function deduceForm(bufferLike) {
+  if (bufferLike instanceof Buffer) {
+    return 'buffer'
+  }
+  if (bufferLike instanceof Uint8Array) {
+    return 'uint8Array'
+  }
+  if (bufferLike instanceof Array) {
+    return 'array'
+  }
+  throw new UnknownFormError()
 }
 
 HyperstructApi.prototype.getObject = function getObject(multihash) {
@@ -22,7 +36,9 @@ HyperstructApi.prototype.getObject = function getObject(multihash) {
     if (hyperstruct.version !== 1) {
       throw new HyperstructVersionError(`hyperstruct.version should be 1, received ${hyperstruct.version}`)
     }
-    return this.ipfsApi.getFile(new Amorph(hyperstruct.protofileMultihash, 'buffer')).then((protofile) => {
+    const protofileMultihashBufferLike = hyperstruct.protofileMultihash
+    const form = deduceForm(protofileMultihashBufferLike)
+    return this.ipfsApi.getFile(new Amorph(protofileMultihashBufferLike, form)).then((protofile) => {
       const fileType = protobuf.parse(protofile.to('utf8')).root.lookup(hyperstruct.fileTypeName)
       return fileType.decode(hyperstruct.file)
     })
@@ -44,7 +60,7 @@ HyperstructApi.encode = HyperstructApi.prototype.encode = function encode(
     file: file.to('buffer')
   })
   const hyperstructFileBufferLike = hyperstructType.encode(hyperstruct).finish()
-  const form = hyperstructFileBufferLike instanceof Buffer ? 'buffer' : 'uint8Array'
+  const form = deduceForm(hyperstructFileBufferLike)
   return new Amorph(hyperstructFileBufferLike, form)
 }
 
