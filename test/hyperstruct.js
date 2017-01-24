@@ -47,7 +47,7 @@ describe('HyperstructApi', () => {
     })
   })
   it('should get store', () => {
-    return hyperstructApi.getFile(hyperstructMultihash).then((store) => {
+    return hyperstructApi.getObject(hyperstructMultihash).then((store) => {
       store.name.should.equal('My Store')
       store.baseCountryCode.should.equal('us')
       store.info.should.equal('My store is awesome!')

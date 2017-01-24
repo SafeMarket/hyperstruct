@@ -1,6 +1,5 @@
 const protobuf = require('protobufjs')
 const IpfsApi = require('ipfs-amorph-api')
-const Q = require('q')
 const arguguard = require('arguguard')
 const Amorph = require('amorph')
 const hyperstructType = require('./lib/hyperstructType')
@@ -13,8 +12,8 @@ function HyperstructApi(ipfsOptions) {
   this.protobuf = protobuf
 }
 
-HyperstructApi.prototype.getFile = function getFile(multihash) {
-  arguguard('hyperstructApi.get(multihash)', [Amorph], arguments)
+HyperstructApi.prototype.getObject = function getObject(multihash) {
+  arguguard('hyperstructApi.getObject(multihash)', [Amorph], arguments)
   return this.ipfsApi.getFile(multihash).then((hyperstructFile) => {
     const hyperstruct = hyperstructType.decode(hyperstructFile.to('buffer'))
     if (hyperstruct === null) {
