@@ -29,7 +29,9 @@ HyperstructApi.prototype.getObject = function getObject(multihash) {
   })
 }
 
-HyperstructApi.encode = function encode(protofileMultihash, fileTypeName, file) {
+HyperstructApi.encode = HyperstructApi.prototype.encode = function encode(
+  protofileMultihash, fileTypeName, file
+) {
   arguguard(
     'HyperstructApi.encode(protofileMultihash, fileType, file)',
     [Amorph, 'string', Amorph],
