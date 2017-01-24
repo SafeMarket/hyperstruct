@@ -43,8 +43,9 @@ HyperstructApi.encode = HyperstructApi.prototype.encode = function encode(
     fileTypeName,
     file: file.to('buffer')
   })
-  const hyperstructFileBuffer = hyperstructType.encode(hyperstruct).finish()
-  return new Amorph(hyperstructFileBuffer, 'buffer')
+  const hyperstructFileBufferLike = hyperstructType.encode(hyperstruct).finish()
+  const form = hyperstructFileBufferLike instanceof Buffer ? 'buffer' : 'uint8Array'
+  return new Amorph(hyperstructFileBufferLike, form)
 }
 
 HyperstructApi.prototype.addFile = function addFile(protofileMultihash, fileTypeName, file) {
